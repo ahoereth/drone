@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  drone-server:
+    image: drone/drone:0.8
+    ports:
+      - 80:80
+      - 443:443
+      - 9000:9000
+    volumes:
+      - /var/lib/drone:/var/lib/drone/
+    restart: always
+    environment:
+      - DRONE_OPEN=false
+      #- DRONE_ORGS=
+      - DRONE_ADMIN=${DRONE_ADMINS}
+      - DRONE_HOST=http://${NAME}.${DOMAIN}
+      - DRONE_SECRET=${DRONE_SECRET}
+      - DRONE_GITHUB=true
+      - DRONE_GITHUB_CLIENT=${GITHUB_CLIENT}
+      - DRONE_GITHUB_SECRET=${GITHUB_SECRET}
+      - DRONE_LETS_ENCRYPT=true
+
+  drone-agent:
+    image: drone/agent:0.8
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=${DRONE_SECRET}
+      - DRONE_MAX_PROCS=1
