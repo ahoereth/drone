@@ -4,6 +4,7 @@ services:
   drone-server:
     image: drone/drone:0.8
     ports:
+      #- 80:8000
       - 80:80
       - 443:443
       - 9000:9000
@@ -14,12 +15,12 @@ services:
       - DRONE_OPEN=false
       #- DRONE_ORGS=
       - DRONE_ADMIN=${DRONE_ADMINS}
-      - DRONE_HOST=http://${NAME}.${DOMAIN}
+      - DRONE_HOST=${PROTOCOL}://${NAME}.${DOMAIN}
       - DRONE_SECRET=${DRONE_SECRET}
       - DRONE_GITHUB=true
       - DRONE_GITHUB_CLIENT=${GITHUB_CLIENT}
       - DRONE_GITHUB_SECRET=${GITHUB_SECRET}
-      - DRONE_LETS_ENCRYPT=true
+      - DRONE_LETS_ENCRYPT=${HTTPS}
 
   drone-agent:
     image: drone/agent:0.8
